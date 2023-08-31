@@ -9,12 +9,15 @@ import matplotlib as mpl
 #except Exception, e:
     #sys.stderr.write("Matplotlib is not available!")
 
-
+# Row example of .wln file 
 #REG;1690271769;31.09046;62.739162;0;154;ALT:164.3;
 #SATS:5,signal:0,gps_module:0,over_speed:0,fall_alarm:0,battery:0,motion_alarm:0,move_alarm:0,gsm_csq:7,battery_level:97,sats_in_view:14;;;;
 
-data = pd.read_csv('/home/ines/git/GPS/black1.wln', sep=';', header=None, names=["REG", "Coord1", "Coord2", "Coord3", "Coord4", "Coord5", "Coord6", "value", "Coord7", "Coord8", "Coord9", "Coord10"])
+#Read the wln file data in a DataFrame and the parse it in a way to get the values separated in a format of Key, value
+
+data = pd.read_csv('folder to the wln file', sep=';', header=None, names=["REG", "Coord1", "Coord2", "Coord3", "Coord4", "Coord5", "Coord6", "value", "Coord7", "Coord8", "Coord9", "Coord10"])
 df = pd.DataFrame()
+# data['value'] contains the data that I am interested in 
 for gps_x in range(len(data['value'])):
     array_GPSvalue = data['value'][gps_x]
     GPS_list = array_GPSvalue.split(",")
