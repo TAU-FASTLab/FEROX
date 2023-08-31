@@ -15,11 +15,11 @@ import matplotlib as mpl
 
 #Read the wln file data in a DataFrame and the parse it in a way to get the values separated in a format of Key, value
 
-data = pd.read_csv('folder to the wln file', sep=';', header=None, names=["REG", "Coord1", "Coord2", "Coord3", "Coord4", "Coord5", "Coord6", "value", "Coord7", "Coord8", "Coord9", "Coord10"])
+GPSWln_data = pd.read_csv('folder to the wln file', sep=';', header=None, names=["REG", "Coord1", "Coord2", "Coord3", "Coord4", "Coord5", "Coord6", "value", "Coord7", "Coord8", "Coord9", "Coord10"])
 df = pd.DataFrame()
-# data['value'] contains the data that I am interested in 
-for gps_x in range(len(data['value'])):
-    array_GPSvalue = data['value'][gps_x]
+# GPSWln_data['value'] contains the data that I am interested in 
+for gps_x in range(len(GPSWln_data['value'])):
+    array_GPSvalue = GPSWln_data['value'][gps_x]
     GPS_list = array_GPSvalue.split(",")
     data_dict={}
     for item in GPS_list:
