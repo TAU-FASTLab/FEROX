@@ -1,1 +1,1 @@
-In here there are files to Plot GPS Minifinder data from Ilomantsi
+This folder aims to collect the code for GPS Minifinder data Analysis
