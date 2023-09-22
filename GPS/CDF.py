@@ -15,7 +15,7 @@ import matplotlib as mpl
 
 #Read the wln file data in a DataFrame and the parse it in a way to get the values separated in a format of Key, value
 
-GPSWln_data = pd.read_csv('C:/Users/phmaro/OneDrive - TUNI.fi/Documents/Programming/25JulyPinkForest.wln', sep=';', header=None, names=["REG", "Coord1", "Coord2", "Coord3", "Coord4", "Coord5", "Coord6", "value", "Coord7", "Coord8", "Coord9", "Coord10"])
+GPSWln_data = pd.read_csv('C:/.../25JulyPinkForest.wln', sep=';', header=None, names=["REG", "Coord1", "Coord2", "Coord3", "Coord4", "Coord5", "Coord6", "value", "Coord7", "Coord8", "Coord9", "Coord10"])
 df = pd.DataFrame()
 # GPSWln_data['value'] contains the data that I am interested in 
 for gps_x in range(len(GPSWln_data['value'])):
