@@ -3,6 +3,8 @@ import gpxpy.gpx
 from geopy.distance import geodesic
 import pandas as pd
 from datetime import datetime, timedelta
+import matplotlib.pylab as plt
+import matplotlib as mpl
 
 
 # Load the GPX file
@@ -124,6 +126,38 @@ merged_df = pd.merge(df_minifinder, gpx_df, on='Timestamp', suffixes=('_df_minif
 merged_df['Vincenty_Error'] = merged_df.apply(lambda row: geodesic((row['Latitude_df_minifinder'], row['Longitude_df_minifinder']), (row['Latitude_gpx_df'], row['Longitude_gpx_df'])).meters, axis=1)
 
 print(merged_df)
+
+plt.figure(figsize=(10, 6))
+plt.plot(merged_df['Timestamp'], merged_df['Vincenty_Error'], marker='o')
+plt.xlabel('Timestamp')
+plt.ylabel('Vincenty Distance (meters)')
+plt.title('Vincenty Distance Over Time - Pink July 25 Morning')
+plt.grid(True)
+plt.savefig("VicentyPink25JulyFirst.png", dpi=1000)
+plt.show()
+
+# Create a figure
+plt.figure(figsize=(10, 6))
+
+# Plot Set A coordinates
+plt.scatter(merged_df['Longitude_df_minifinder'], merged_df['Latitude_df_minifinder'], c='blue', label='Set Minifinder')
+#for i, txt in enumerate(merged_df['Timestamp']):
+ #   plt.annotate(f"df_minifinder-{txt}", (merged_df['Longitude_df_minifinder'].iloc[i], merged_df['Latitude_df_minifinder'].iloc[i]))
+
+# Plot Set B coordinates
+plt.scatter(merged_df['Longitude_gpx_df'], merged_df['Latitude_gpx_df'], c='red', label='Set GPX')
+#for i, txt in enumerate(merged_df['Timestamp']):
+ #   plt.annotate(f"Phone-{txt}", (merged_df['Longitude_gpx_df'].iloc[i], merged_df['Latitude_gpx_df'].iloc[i]))
+
+# Label the plot
+plt.title('Coordinates Over Time - Pink July 25 Morning')
+plt.xlabel('Longitude')
+plt.ylabel('Latitude')
+plt.legend()
+plt.grid(True)
+plt.savefig("GPSLatitudeLongitude.png", dpi=1000)
+# Show the plot
+plt.show()
 
 
 # Initialize a datetime object with your chosen initial time
