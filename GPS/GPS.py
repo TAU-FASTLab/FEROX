@@ -140,12 +140,12 @@ plt.show()
 plt.figure(figsize=(10, 6))
 
 # Plot Set A coordinates
-plt.scatter(merged_df['Longitude_df_minifinder'], merged_df['Latitude_df_minifinder'], c='blue', label='Set Minifinder')
+plt.scatter(merged_df['Longitude_df_minifinder'], merged_df['Latitude_df_minifinder'], c='blue', label='GPS Minifinder')
 #for i, txt in enumerate(merged_df['Timestamp']):
  #   plt.annotate(f"df_minifinder-{txt}", (merged_df['Longitude_df_minifinder'].iloc[i], merged_df['Latitude_df_minifinder'].iloc[i]))
 
 # Plot Set B coordinates
-plt.scatter(merged_df['Longitude_gpx_df'], merged_df['Latitude_gpx_df'], c='red', label='Set GPX')
+plt.scatter(merged_df['Longitude_gpx_df'], merged_df['Latitude_gpx_df'], c='red', label='Phone App')
 #for i, txt in enumerate(merged_df['Timestamp']):
  #   plt.annotate(f"Phone-{txt}", (merged_df['Longitude_gpx_df'].iloc[i], merged_df['Latitude_gpx_df'].iloc[i]))
 
@@ -155,7 +155,7 @@ plt.xlabel('Longitude')
 plt.ylabel('Latitude')
 plt.legend()
 plt.grid(True)
-plt.savefig("GPSLatitudeLongitude.png", dpi=1000)
+plt.savefig("GPSLatitudeLongitude-25JulyMorning.png", dpi=1000)
 # Show the plot
 plt.show()
 
