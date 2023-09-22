@@ -8,7 +8,7 @@ import matplotlib as mpl
 
 
 # Load the GPX file
-with open('C:/Users/phmaro/OneDrive - TUNI.fi/Documents/Programming/route5649825475.gpx', 'r') as gpx_file:
+with open('C:/.../route5649825475.gpx', 'r') as gpx_file:
     gpx = gpxpy.parse(gpx_file)
 
 # Iterate through tracks and segments and print lat and long
@@ -81,7 +81,7 @@ initial_time = datetime.strptime('2023-07-25 10:58:01', '%Y-%m-%d %H:%M:%S')
 delta = timedelta(seconds=30)
 
 # Read the Wialon file into the wialon_data array
-with open('C:/Users/phmaro/OneDrive - TUNI.fi/Documents/Programming/25JulyPinkForest.wln', 'r') as file:
+with open('C:.../25JulyPinkForest.wln', 'r') as file:
     wialon_data = file.readlines()
 
 # Populate the DataFrame
