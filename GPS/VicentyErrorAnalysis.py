@@ -46,7 +46,7 @@ dataGPS = [[2023, 'July', 25, 'Morning', 'Pink', 10, 58, 1, 30, 1, 50, 24],
 # assign into a dataframe the data to iterate from the different GPSs
 df_GPSAnalysis = pd.DataFrame(dataGPS, columns=['Year', 'Month', 'Day','TimeOfDay', 'GPSName', 'Hour', 'Minute', 'Second', 'Time_Interval','MapMyFitnessHourDuration', 'MapMyFitnessMinutesDuration','MapMyFitnessSecondDuration'])
 
-
+file_path = f'C:/...'
 # Loop through the DataFrame rows
 for index, row in df_GPSAnalysis.iterrows():
     yeargps = row['Year']
@@ -62,13 +62,13 @@ for index, row in df_GPSAnalysis.iterrows():
     totaldurationminutes = row['MapMyFitnessMinutesDuration']
     totaldurationseconds = row['MapMyFitnessSecondDuration']
     # loadGPXFile loads the GPX file from MapmyFitness App, using the time and the duration
-    df_MapMyFitness = loadGPXFile.loadGPXFile(yeargps, monthgps, daygps, hourgps, minutegps, secondgps, time_of_day, totaldurationhour, totaldurationminutes, totaldurationseconds)
+    df_MapMyFitness = loadGPXFile.loadGPXFile(file_path, yeargps, monthgps, daygps, hourgps, minutegps, secondgps, time_of_day, totaldurationhour, totaldurationminutes, totaldurationseconds)
     time.sleep(5)
     # GPSWlnData parse the Wln files from GPS Minifinder and calculates the VicentyDistance between the positions from GPS Minifinder and MapMyFitness
-    df_vicentyDistance = GPSWln.GPSWlnData(df_MapMyFitness, yeargps, monthgps, daygps, hourgps, minutegps, secondgps, time_of_day, gps_name, time_interval)
+    df_vicentyDistance = GPSWln.GPSWlnData(file_path, df_MapMyFitness, yeargps, monthgps, daygps, hourgps, minutegps, secondgps, time_of_day, gps_name, time_interval)
     time.sleep(5)
     # StatsAnalysis calculates from the vicenty distance values the min, max, mean, median, variance, standard deviation, confidence interval 95%, Cumulative Distribution Function, 
-    GPStats.StatsAnalysis(df_vicentyDistance,monthgps, daygps, time_of_day, gps_name)
+    GPStats.StatsAnalysis(file_path, df_vicentyDistance,monthgps, daygps, time_of_day, gps_name)
 
 #This takes the txt generated with the statsiscally data and save it as csv 
-StatsFiletxt2csv.StatsFileTxt2csv()
+StatsFiletxt2csv.StatsFileTxt2csv(file_path)

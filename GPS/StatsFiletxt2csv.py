@@ -3,7 +3,7 @@ import pandas as pd
 
 # this procedure transform a txt file into csv 
 
-def StatsFileTxt2csv():
+def StatsFileTxt2csv(file_path):
     # Initialize an empty list to hold the data rows
     data_list = []
 
@@ -11,7 +11,7 @@ def StatsFileTxt2csv():
     current_row = {}
 
     # Read the txt file line by line
-    with open("C:/.../stats_analysis.txt", 'r') as f:
+    with open(f"{file_path}/GPS/stats_analysis.txt", 'r') as f:
         for line in f:
             line = line.strip()
             
@@ -44,4 +44,4 @@ def StatsFileTxt2csv():
     df = df[columns_order]
 
     # Save DataFrame to CSV
-    df.to_csv('C:/.../GPS/stats_analysis.csv', index=False)
+    df.to_csv(f'{file_path}/GPS/stats_analysis.csv', index=False)
