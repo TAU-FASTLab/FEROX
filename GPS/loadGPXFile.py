@@ -8,7 +8,7 @@ import matplotlib as mpl
 import numpy as np
 import scipy.stats as stats
 import math
-import Month2Number
+import month2Number
 
 #df_MapMyFitness = loadGPXFile.loadGPXFile(2023, 'July', 25, 'July', 10, 58, 1, 'Morning', 1, 51, 24)
 
