@@ -1,17 +1,13 @@
-import gpxpy
-import gpxpy.gpx
 from geopy.distance import geodesic
 import pandas as pd
 from datetime import datetime, timedelta
 import matplotlib.pylab as plt
-import matplotlib as mpl
-import numpy as np
-import scipy.stats as stats
-import math
 import month2Number
+import seaborn as sns
 
 
-#def loadGPXFile(yeargps, monthgps, daygps, hourgps, minutegps, secondgps, time_of_day, totaldurationhour, totaldurationminutes, totaldurationseconds):
+# def loadGPXFile(yeargps, monthgps, daygps, hourgps, minutegps, secondgps, time_of_day, totaldurationhour,
+# totaldurationminutes, totaldurationseconds):
 
 def gpsWlnData (file_path, gpx_df, yeargps, monthgps, daygps, hourgps, minutegps, secondgps, time_of_day, gps_name, sampling_interval):
     # Initialize an empty DataFrame
@@ -19,7 +15,7 @@ def gpsWlnData (file_path, gpx_df, yeargps, monthgps, daygps, hourgps, minutegps
     df_minifinder['Timestamp'] = pd.to_datetime(df_minifinder['Timestamp'])
 
     #initial_time = datetime.strptime('2023-07-25 10:58:01', '%Y-%m-%d %H:%M:%S')
-    initial_time = datetime(year=yeargps, month=Month2Number.month_to_number(monthgps), day=daygps, hour=hourgps, minute=minutegps, second=secondgps)
+    initial_time = datetime(year=yeargps, month=month2Number.month_to_number(monthgps), day=daygps, hour=hourgps, minute=minutegps, second=secondgps)
 
     # Sample interval of 30 seconds/60 sec/ 180 sec
     delta = timedelta(seconds=sampling_interval)
@@ -45,6 +41,7 @@ def gpsWlnData (file_path, gpx_df, yeargps, monthgps, daygps, hourgps, minutegps
         
         # Add to DataFrame
         new_row = pd.DataFrame({'Latitude': [latitude], 'Longitude': [longitude], 'Timestamp': [timestamp_minifinder]})
+        df_minifinder = df_minifinder.dropna(how='all', axis=1)
         df_minifinder = pd.concat([df_minifinder, new_row], ignore_index=True)
         #df_minifinder = pd.concat({'timestamp': timestamp_minifinder, 'longitude': longitude, 'latitude': latitude}, ignore_index=True)
 
@@ -61,20 +58,29 @@ def gpsWlnData (file_path, gpx_df, yeargps, monthgps, daygps, hourgps, minutegps
 
     # Merge DataFrames on 'Timestamp'
     merged_df = pd.merge(df_minifinder, gpx_df, on='Timestamp', suffixes=('_df_minifinder', '_gpx_df'))
+    merged_df = merged_df.query("Latitude_df_minifinder != 0.0 and Longitude_df_minifinder != 0.0")
     merged_df['Vincenty_Error'] = merged_df.apply(lambda row: geodesic((row['Latitude_df_minifinder'], row['Longitude_df_minifinder']), (row['Latitude_gpx_df'], row['Longitude_gpx_df'])).meters, axis=1)
+    merged_df['gps_name'] = gps_name
+    merged_df['daygps'] = daygps
+    merged_df['monthgps'] = monthgps
+    merged_df['time_of_day'] = time_of_day
+    merged_df['sampling_interval'] = sampling_interval
+    #print('merged_df')
+    #print(merged_df)
     vicenty_df = merged_df['Vincenty_Error']
-    vicenty_df=vicenty_df.astype(float) 
+    vicenty_df=vicenty_df.astype(float)
+ 
 
     #-----------
+        #for i, txt in enumerate(merged_df['Timestamp']):
+    #   plt.annotate(f"Phone-{txt}", (merged_df['Longitude_gpx_df'].iloc[i], merged_df['Latitude_gpx_df'].iloc[i]))
+        #for i, txt in enumerate(merged_df['Timestamp']):
+    #   plt.annotate(f"df_minifinder-{txt}", (merged_df['Longitude_df_minifinder'].iloc[i], merged_df['Latitude_df_minifinder'].iloc[i]))
+    # Plot MapMyFitness - PhoneApp coordinates
     # Plot GPS coordinates
     plt.figure(figsize=(10, 6))
     plt.scatter(merged_df['Longitude_df_minifinder'], merged_df['Latitude_df_minifinder'], c='blue', label='GPS Minifinder')
-    #for i, txt in enumerate(merged_df['Timestamp']):
-    #   plt.annotate(f"df_minifinder-{txt}", (merged_df['Longitude_df_minifinder'].iloc[i], merged_df['Latitude_df_minifinder'].iloc[i]))
-    # Plot MapMyFitness - PhoneApp coordinates
     plt.scatter(merged_df['Longitude_gpx_df'], merged_df['Latitude_gpx_df'], c='red', label='Phone App')
-    #for i, txt in enumerate(merged_df['Timestamp']):
-    #   plt.annotate(f"Phone-{txt}", (merged_df['Longitude_gpx_df'].iloc[i], merged_df['Latitude_gpx_df'].iloc[i]))
     plt.title(f'Coordinates Over Time-{gps_name}GPS-{daygps}-{monthgps}-{time_of_day}')
     plt.xlabel('Longitude')
     plt.ylabel('Latitude')
@@ -82,6 +88,7 @@ def gpsWlnData (file_path, gpx_df, yeargps, monthgps, daygps, hourgps, minutegps
     plt.grid(True)
     picture_file_path_coord = f"{file_path}/GPS/{daygps}-{monthgps}-{time_of_day}/CoordinatesOverTime-{gps_name}-{daygps}-{monthgps}-{time_of_day}.png"
     plt.savefig(picture_file_path_coord, dpi=1000)
+    plt.close()
     #plt.show()
     #----------
 
@@ -95,6 +102,7 @@ def gpsWlnData (file_path, gpx_df, yeargps, monthgps, daygps, hourgps, minutegps
     plt.grid(True)
     picture_file_path_coord = f"{file_path}/GPS/{daygps}-{monthgps}-{time_of_day}/VicentyDistance-{gps_name}-{daygps}-{monthgps}-{time_of_day}.png"
     plt.savefig(picture_file_path_coord, dpi=1000)
+    plt.close()
     #plt.show()
 
     
@@ -109,7 +117,13 @@ def gpsWlnData (file_path, gpx_df, yeargps, monthgps, daygps, hourgps, minutegps
     plt.title(f'Vicenty Error-{gps_name}GPS-{daygps}-{monthgps}-{time_of_day}')
     picture_file_path = f"{file_path}/GPS/{daygps}-{monthgps}-{time_of_day}/Histogram-VicentyError-{gps_name}-{daygps}-{monthgps}-{time_of_day}.png"
     plt.savefig(picture_file_path, dpi=1000)
+    plt.close()
     #plt.show()
     #----------
 
-    return vicenty_df
+    #sns.boxplot(x=merged_df['gps_name'], y=merged_df['Vincenty_Error'])
+    #plt.title(f'Box Plot of VicentyError -{gps_name}-{daygps}-{monthgps}-{time_of_day} ')
+    #plt.show()
+
+
+    return vicenty_df, merged_df
