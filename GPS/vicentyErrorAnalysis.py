@@ -6,11 +6,11 @@ import time
 import statsFiletxt2csv
 
 # GPS Minifinder data starting time, considering the duration from MapMyFitness App, as follows:
-#25 July Morning tracking GPS Position from 10:58:01 during 1h 50 minutes and 24 seconds
-#25 July Afternoon tracking GPS Position from 14:38:22 during 1h  7minutes and 47 seconds
-#26 July Afternoon tracking GPS Position from 14:05:23 during 1 h 17 minutes and 34 seconds
-#27 July Morning tracking GPS Position from 10:14:22 during 2 h 6 minutes and 12 seconds
-#27 July Afternoon tracking GPS Position from 13:54:07 during 1 h 32 minutes and 49 seconds
+#25 July Morning tracking GPS Position from 10:58:01 during 1h 50 minutes and 24 seconds, collecting Raspberry in Thick Forest
+#25 July Afternoon tracking GPS Position from 14:38:22 during 1h  7minutes and 47 seconds, collecting Cloudberry in Swamp Area
+#26 July Afternoon tracking GPS Position from 14:05:23 during 1 h 17 minutes and 34 seconds, collecting Cloudberry in Swamp Area
+#27 July Morning tracking GPS Position from 10:14:22 during 2 h 6 minutes and 12 seconds, collecting Raspberry in Thick Forest
+#27 July Afternoon tracking GPS Position from 13:54:07 during 1 h 32 minutes and 49 seconds, collecting Raspberry in Thick Forest
 
 dataGPS = [[2023, 'July', 25, 'Morning', 'Pink', 10, 58, 1, 30, 1, 50, 24], 
            [2023, 'July', 25, 'Morning', 'Blue', 10, 58, 1, 30, 1, 50, 24], 
@@ -65,10 +65,12 @@ for index, row in df_GPSAnalysis.iterrows():
     df_MapMyFitness = loadGPXFile.loadGPXFile(file_path, yeargps, monthgps, daygps, hourgps, minutegps, secondgps, time_of_day, totaldurationhour, totaldurationminutes, totaldurationseconds)
     time.sleep(5)
     # GPSWlnData parse the Wln files from GPS Minifinder and calculates the VicentyDistance between the positions from GPS Minifinder and MapMyFitness
-    df_vicentyDistance = gpsWln.gpsWlnData(file_path, df_MapMyFitness, yeargps, monthgps, daygps, hourgps, minutegps, secondgps, time_of_day, gps_name, time_interval)
+    df_vicentyDistance, df_merged_bygps = gpsWln.gpsWlnData(file_path, df_MapMyFitness, yeargps, monthgps, daygps, hourgps, minutegps, secondgps, time_of_day, gps_name, time_interval)
+    print(df_vicentyDistance)
     time.sleep(5)
     # StatsAnalysis calculates from the vicenty distance values the min, max, mean, median, variance, standard deviation, confidence interval 95%, Cumulative Distribution Function, 
-    gpstats.statsAnalysis(file_path, df_vicentyDistance,monthgps, daygps, time_of_day, gps_name)
-
-#This takes the txt generated with the statsiscally data and save it as csv 
+    gpstats.statsAnalysis(file_path, df_merged_bygps['Vicenty_Error'].astype(float), monthgps, daygps, time_of_day, gps_name)
+    df_merged_total = pd.concat([df_merged_total, df_merged_bygps], ignore_index=True)
+#This takes the txt generated with the statsiscally data and save it as csv
+#print(df_merged_total) 
 statsFiletxt2csv.statsFileTxt2csv(file_path)
