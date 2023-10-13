@@ -4,6 +4,9 @@ import gpsWln
 import gpstats
 import time
 import statsFiletxt2csv
+import seaborn as sns
+import matplotlib.pylab as plt
+import matplotlib as mpl
 
 # GPS Minifinder data starting time, considering the duration from MapMyFitness App, as follows:
 #25 July Morning tracking GPS Position from 10:58:01 during 1h 50 minutes and 24 seconds, collecting Raspberry in Thick Forest
@@ -48,6 +51,7 @@ df_GPSAnalysis = pd.DataFrame(dataGPS, columns=['Year', 'Month', 'Day','TimeOfDa
 
 file_path = f'C:/...'
 # Loop through the DataFrame rows
+df_merged_total = pd.DataFrame()
 for index, row in df_GPSAnalysis.iterrows():
     yeargps = row['Year']
     monthgps = row['Month']
@@ -65,12 +69,18 @@ for index, row in df_GPSAnalysis.iterrows():
     df_MapMyFitness = loadGPXFile.loadGPXFile(file_path, yeargps, monthgps, daygps, hourgps, minutegps, secondgps, time_of_day, totaldurationhour, totaldurationminutes, totaldurationseconds)
     time.sleep(5)
     # GPSWlnData parse the Wln files from GPS Minifinder and calculates the VicentyDistance between the positions from GPS Minifinder and MapMyFitness
+    #df_vicentyDistance = gpsWln.gpsWlnData(file_path, df_MapMyFitness, yeargps, monthgps, daygps, hourgps, minutegps, secondgps, time_of_day, gps_name, time_interval)
+    #time.sleep(5)
     df_vicentyDistance, df_merged_bygps = gpsWln.gpsWlnData(file_path, df_MapMyFitness, yeargps, monthgps, daygps, hourgps, minutegps, secondgps, time_of_day, gps_name, time_interval)
-    print(df_vicentyDistance)
+    #print(df_vicentyDistance)
     time.sleep(5)
     # StatsAnalysis calculates from the vicenty distance values the min, max, mean, median, variance, standard deviation, confidence interval 95%, Cumulative Distribution Function, 
-    gpstats.statsAnalysis(file_path, df_merged_bygps['Vicenty_Error'].astype(float), monthgps, daygps, time_of_day, gps_name)
+    gpstats.statsAnalysis(file_path, df_vicentyDistance, monthgps, daygps, time_of_day, gps_name)
     df_merged_total = pd.concat([df_merged_total, df_merged_bygps], ignore_index=True)
-#This takes the txt generated with the statsiscally data and save it as csv
-#print(df_merged_total) 
+    # StatsAnalysis calculates from the vicenty distance values the min, max, mean, median, variance, standard deviation, confidence interval 95%, Cumulative Distribution Function, 
+    #gpstats.statsAnalysis(file_path, df_vicentyDistance,monthgps, daygps, time_of_day, gps_name)
+
+df_merged_total.to_csv('df_merged_total.csv', index=False)  # Set index=False to avoid saving row indices
+
+#This takes the txt generated with the statsiscally data and save it as csv 
 statsFiletxt2csv.statsFileTxt2csv(file_path)
